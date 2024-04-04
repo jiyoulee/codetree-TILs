@@ -27,11 +27,11 @@ if lr != br and lc != bc:
     answer = abs(lr - br) + abs(lc - bc) - 1
 elif lr == br:
     answer = abs(lc - bc) - 1
-    if rr == lr:
+    if (lr < rr and br > rr) or (br < rr and lr > rr):
         answer += 2
 elif lc == bc:
     answer = abs(lr - br) - 1
-    if rc == lc:
+    if (lc < rc and bc > rc) or (bc < rc and lc > rc):
         answer += 2
 
 # Output
