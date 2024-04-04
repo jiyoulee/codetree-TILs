@@ -5,6 +5,8 @@ num_cols = 10
 grid = [list(input().split()) for _ in range(num_rows)]
 lr = 0
 lc = 0
+rr = 0
+rc = 0
 br = 0
 bc = 0
 
@@ -14,6 +16,9 @@ for i in range(num_rows):
         if "L" == grid[i][0][j]:
             lr = i
             lc = j
+        if "R" == grid[i][0][j]:
+            rr = i
+            rc = j
         if "B" == grid[i][0][j]:
             br = i
             bc = j
@@ -22,8 +27,12 @@ if lr != br and lc != bc:
     answer = abs(lr - br) + abs(lc - bc) - 1
 elif lr == br:
     answer = abs(lc - bc) - 1
+    if rr == lr:
+        answer += 2
 elif lc == bc:
     answer = abs(lr - br) - 1
+    if rc == lc:
+        answer += 2
 
 # Output
 print(answer)
