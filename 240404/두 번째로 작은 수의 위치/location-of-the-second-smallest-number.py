@@ -1,5 +1,5 @@
 # Input
-answer = -1
+answer = -2
 n = int(input())
 number_list = sorted(list(map(int, input().split())))
 
@@ -16,4 +16,5 @@ if -1 != idx:
     elif number_list[idx + 1] != number_list[idx]:
         answer = idx
 
+# Output
 print(answer + 1)
