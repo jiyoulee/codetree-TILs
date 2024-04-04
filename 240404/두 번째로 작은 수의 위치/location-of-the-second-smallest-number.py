@@ -1,20 +1,22 @@
-# Input
+# Define
 answer = -2
 n = int(input())
-number_list = sorted(list(map(int, input().split())))
+number_list = list(map(int, input().split()))
+sorted_number_list = sorted(number_list)
 
 # Compute
-idx = -1
-for i in range(len(number_list)):
-    if number_list[0] != number_list[i]:
-        idx = i
+val = sorted_number_list[0]
+for number in sorted_number_list:
+    if number != val:
+        val = number
         break
 
-if -1 != idx:
-    if len(number_list) - 1 == idx:
-        answer = idx
-    elif number_list[idx + 1] != number_list[idx]:
-        answer = idx
+if sorted_number_list[0] != val and 1 == number_list.count(val):
+    idx = -1
+    for i in range(len(number_list)):
+        if number_list[i] == val:
+            answer = i
+            break
 
 # Output
 print(answer + 1)
