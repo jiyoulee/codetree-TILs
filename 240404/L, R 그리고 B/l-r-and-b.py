@@ -9,6 +9,7 @@ rr = 0
 rc = 0
 br = 0
 bc = 0
+verbose = False
 
 # Compute
 for i in range(num_rows):
@@ -27,11 +28,13 @@ if lr != br and lc != bc:
     answer = abs(lr - br) + abs(lc - bc) - 1
 elif lr == br:
     answer = abs(lc - bc) - 1
-    if (lr < rr and br > rr) or (br < rr and lr > rr):
+    if (lc < rc and bc > rc) or (bc < rc and lc > rc):
         answer += 2
 elif lc == bc:
+    if verbose:
+        print(lc, rc, bc)
     answer = abs(lr - br) - 1
-    if (lc < rc and bc > rc) or (bc < rc and lc > rc):
+    if (lr < rr and br > rr) or (br < rr and lr > rr):
         answer += 2
 
 # Output
