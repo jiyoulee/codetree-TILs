@@ -1,6 +1,6 @@
 # 1. 변수 정의
 answer = 0
-verbose = True
+verbose = False
 WALL = -99
 PERSON = -2
 EXIT = -98
