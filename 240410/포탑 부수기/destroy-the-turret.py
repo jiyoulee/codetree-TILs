@@ -1,3 +1,5 @@
+from collections import deque
+
 # 1. 정의
 answer = 0
 verbose = False
