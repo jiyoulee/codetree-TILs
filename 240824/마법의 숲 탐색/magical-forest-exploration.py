@@ -110,7 +110,7 @@ def get_fairy_position(r: int, c: int):
         for di in range(4):
             nextr, nextc = curr + dr[di], curc + dc[di]
 
-            if 0 < nextr < (num_rows + 2) and 0 < nextc < (num_cols + 2) and not visited[nextr][nextc]:
+            if 2 <= nextr < (num_rows + 2) and 1 <= nextc <= num_cols and not visited[nextr][nextc]:
                 if 0 < curt:
                     if abs(board[nextr][nextc]) == curt:
                         visited[nextr][nextc] = True
