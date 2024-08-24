@@ -97,7 +97,7 @@ def get_fairy_position(r: int, c: int):
     locr, locc = r, c
 
     q = deque()
-    visited = [[False] * (num_cols + 2) for _ in range(num_rows + 3)]
+    visited = [[False] * (num_cols + 2) for _ in range(num_rows + 2)]
 
     q.append((locr, locc))
     visited[locr][locc] = True
