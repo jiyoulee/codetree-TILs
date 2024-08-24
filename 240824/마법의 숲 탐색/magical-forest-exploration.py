@@ -7,8 +7,8 @@ dr = [-1, 0, 1, 0]
 dc = [0, 1, 0, -1]
 
 num_rows, num_cols, num_turns = map(int, input().split())
-num_rows += 1
-num_cols += 1
+num_rows += 2
+num_cols += 2
 board = [[0] * num_cols for _ in range(num_rows)]
 
 def print_global_vars():
@@ -28,7 +28,7 @@ def get_golem_position(r: int, c: int, d: int):
         if (
                 0 <= (locr + 1) and
                 num_rows > (locr + 2) and
-                0 < (locc - 1) and
+                1 < (locc - 1) and
                 num_cols > (locc + 1) and
                 not board[locr + 1][locc - 1] and
                 not board[locr + 2][locc] and
@@ -39,7 +39,7 @@ def get_golem_position(r: int, c: int, d: int):
         elif (
                 0 <= (locr - 1) and
                 num_rows > (locr + 2) and
-                0 < (locc - 2) and
+                1 < (locc - 2) and
                 num_cols > (locc - 1) and
                 not board[locr - 1][locc - 1] and
                 not board[locr][locc - 2] and
@@ -54,7 +54,7 @@ def get_golem_position(r: int, c: int, d: int):
         elif (
                 0 <= (locr - 1) and
                 num_rows > (locr + 2) and
-                0 < (locc + 1) and
+                1 < (locc + 1) and
                 num_cols > (locc + 2) and
                 not board[locr - 1][locc + 1] and
                 not board[locr][locc + 2] and
@@ -118,7 +118,7 @@ def get_fairy_position(r: int, c: int):
         for di in range(4):
             nextr, nextc = curr + dr[di], curc + dc[di]
 
-            if 0 < nextr < num_rows and 0 < nextc < num_cols and not visited[nextr][nextc]:
+            if 1 < nextr < num_rows and 1 < nextc < num_cols and not visited[nextr][nextc]:
                 if 0 < curt:
                     if abs(board[nextr][nextc]) == curt:
                         visited[nextr][nextc] = True
@@ -130,14 +130,15 @@ def get_fairy_position(r: int, c: int):
                         val = max(val, nextr)
                         q.append((nextr, nextc))
 
-    return val
+    return val - 1
 
 
 answer = 0
 
 for t in range(1, num_turns + 1):
-    r = 0
+    r = 1
     c, d = map(int, input().split())
+    c += 1
 
     r, c, d = get_golem_position(r, c, d)
 
