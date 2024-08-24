@@ -4,11 +4,11 @@ dr = [-1, 0, 1, 0]
 dc = [0, 1, 0, -1]
 
 num_rows, num_cols, num_turns = map(int, input().split())
-board = [[0] * (num_cols + 2) for _ in range(num_rows + 3)]
+board = [[0] * (num_cols + 2) for _ in range(num_rows + 2)]
 
 def print_global_vars():
     print("board")
-    for i in range(num_rows + 3):
+    for i in range(num_rows + 2):
         print(board[i])
     print("-" * 20)
 
@@ -21,7 +21,7 @@ def get_golem_position(r: int, c: int, d: int):
     while True:
         # 1. move south
         if (
-                (num_rows + 2) >= (locr + 2) and
+                (num_rows + 2) > (locr + 2) and
                 1 <= (locc - 1) and
                 num_cols >= (locc + 1) and
                 not board[locr + 1][locc - 1] and
@@ -31,7 +31,7 @@ def get_golem_position(r: int, c: int, d: int):
                 locr += 1
         # 2. move west
         elif (
-                (num_rows + 2) >= (locr + 2) and
+                (num_rows + 2) > (locr + 2) and
                 1 <= (locc - 2) and
                 num_cols >= (locc - 1) and
                 not board[locr - 1][locc - 1] and
@@ -45,7 +45,7 @@ def get_golem_position(r: int, c: int, d: int):
                 locd = (locd + 3) % 4
         # 3. move east
         elif (
-                (num_rows + 2) >= (locr + 2) and
+                (num_rows + 2) > (locr + 2) and
                 1 <= (locc + 1) and
                 num_cols >= (locc + 2) and
                 not board[locr - 1][locc + 1] and
@@ -71,7 +71,7 @@ def set_golem_position(r: int, c: int, d: int, t: int):
 
     locr, locc, locd, loct = r, c, d, t
     
-    if 2 <= (locr - 1) and (num_rows + 2) >= (locr + 1) and 1 <= (locc - 1) and num_cols >= (locc + 1):
+    if 2 <= (locr - 1) and (num_rows + 2) > (locr + 1) and 1 <= (locc - 1) and num_cols >= (locc + 1):
         board[locr][locc] = loct
 
         for di in range(4):
@@ -84,7 +84,7 @@ def set_golem_position(r: int, c: int, d: int, t: int):
     else:
         flag = False
 
-        for i in range(num_rows + 3):
+        for i in range(num_rows + 2):
             for j in range(num_cols + 2):
                 board[i][j] = 0
     
@@ -110,7 +110,7 @@ def get_fairy_position(r: int, c: int):
         for di in range(4):
             nextr, nextc = curr + dr[di], curc + dc[di]
 
-            if 0 < nextr < (num_rows + 3) and 0 < nextc < (num_cols + 2) and not visited[nextr][nextc]:
+            if 0 < nextr < (num_rows + 2) and 0 < nextc < (num_cols + 2) and not visited[nextr][nextc]:
                 if 0 < curt:
                     if abs(board[nextr][nextc]) == curt:
                         visited[nextr][nextc] = True
@@ -122,7 +122,7 @@ def get_fairy_position(r: int, c: int):
                         val = max(val, nextr)
                         q.append((nextr, nextc))
 
-    return val - 2
+    return val - 1
 
 
 answer = 0
