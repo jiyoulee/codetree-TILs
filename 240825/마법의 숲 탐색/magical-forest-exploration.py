@@ -125,8 +125,6 @@ def get_fairy_position(ar: int, ac: int):
                 er, ec, ed = nr, nc, dd
                 break
 
-        print(f"cr: {cr}, cc: {cc}, er: {er}, ec: {ec}, ed: {ed}")
-
         # 2. get next golem coordinates
         for dd in range(5):
             nr, nc = er + de[ed][dd][0], ec + de[ed][dd][1]
