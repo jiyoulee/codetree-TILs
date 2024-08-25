@@ -98,53 +98,38 @@ def set_golem_position(ar: int, ac: int, ad: int, at: int):
     return flag
 
 
-def get_fairy_position(ar: int, ac: int):
+def get_fairy_position(r: int, c: int):
     global num_rows, num_cols, board
 
-    r, c = ar, ac
+    locr, locc = r, c
 
     q = deque()
     visited = [[False] * (num_cols + 2) for _ in range(num_rows + 3)]
 
-    q.append((r, c))
-    visited[r][c] = True
-    val = r
+    q.append((locr, locc))
+    visited[locr][locc] = True
+    val = locr
 
     while q:
-        cr, cc = q.pop()
+        curr, curc = q.pop()
+        curt = board[curr][curc]
 
-        # 1. get exit coordinates
-        er, ec, ed = 0, 0, 0
+        for di in range(4):
+            nextr, nextc = curr + dr[di], curc + dc[di]
 
-        for dd in range(4):
-            nr, nc = cr + dr[dd], cc + dc[dd]
+            if 3 <= nextr <= (num_rows + 2) and 1 <= nextc <= num_cols and not visited[nextr][nextc]:
+                if 0 < curt:
+                    if abs(board[nextr][nextc]) == curt:
+                        visited[nextr][nextc] = True
+                        val = max(val, nextr)
+                        q.append((nextr, nextc))
+                elif 0 > curt:
+                    if board[nextr][nextc]:
+                        visited[nextr][nextc] = True
+                        val = max(val, nextr)
+                        q.append((nextr, nextc))
 
-            if 3 <= nr <= num_rows + 2 and 1 <= nc <= num_cols and 0 > board[nr][nc]:
-                er, ec, ed = nr, nc, dd
-                break
-
-        # 2. get next golem coordinates
-        for dd in range(5):
-            nr, nc = er + de[ed][dd][0], ec + de[ed][dd][1]
-
-            if 3 <= nr <= num_rows + 2 and 1 <= nc <= num_cols and not visited[nr][nc] and board[nr][nc]:
-                flag = True
-
-                for ddd in range(4):
-                    nnr, nnc = nr + dr[ddd], nc + dc[ddd]
-
-                    if 3 <= nnr <= num_rows + 2 and 1 <= nnc <= num_cols and abs(board[nnr][nnc]) == board[nr][nc]:
-                        continue
-                    else:
-                        flag = False
-                        break
-
-                if flag:
-                    visited[nr][nc] = True
-                    val = max(val, nr)
-                    q.append((nr, nc))
-
-    return val - 1
+    return val - 2
 
 
 answer = 0
