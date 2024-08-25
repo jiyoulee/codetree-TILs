@@ -28,7 +28,6 @@ def get_golem_position(ar: int, ac: int, ad: int):
     r, c, d = ar, ac, ad
 
     while True:
-        print(r, c, d)
         # 1. move south
         if (
                 num_rows + 2 >= (r + 2) and
@@ -67,7 +66,6 @@ def get_golem_position(ar: int, ac: int, ad: int):
                 d = (d + 1) % 4
         # 4. stop
         else:
-            print("stop")
             break
 
     return r, c, d
@@ -142,7 +140,6 @@ def get_fairy_position(ar: int, ac: int):
                         break
 
                 if flag:
-                    print (f"-- {nr} {nc} {board[nr][nc]}")
                     visited[nr][nc] = True
                     val = max(val, nr)
                     q.append((nr, nc))
