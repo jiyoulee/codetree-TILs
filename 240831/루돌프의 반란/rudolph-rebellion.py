@@ -77,7 +77,7 @@ def move_santa(id: int, m: int):
 
     a = []
     santa = santas[id]
-    
+
     dist = get_distance(rudolf, santa)
     for d in range(4):
         new_santa = tuple([santa[0] + d8[d][0], santa[1] + d8[d][1]])
@@ -109,7 +109,7 @@ def main():
 
     for m in range(1, M + 1):
 
-        if not sum(status):
+        if sum(status) == 1:
             break
 
         move_rudolf(m)
