@@ -38,19 +38,13 @@ def get_square_loc():
     cases = []
     for i in range(1, M + 1):
         if status[i]:
-            cases.append((persons[i][0], persons[i][1], max(abs(door[0] - persons[i][0]), abs(door[1] - persons[i][1]))))
+            r, c = persons[i]
+            l = max(abs(door[0] - persons[i][0]), abs(door[1] - persons[i][1]))
+            loc = (max(1, max(r, door[0]) - l), max(1, max(c, door[1]) - l))
+            cases.append((loc[0], loc[1], l))
     cases.sort(key=lambda x: (x[2], x[0], x[1]))
 
-    r, c, l = cases[0]
-    rdif = abs(door[0] - r)
-    cdif = abs(door[1] - c)
-
-    if rdif >= cdif:
-        loc = (min(r, door[0]), max(1, max(c, door[1]) - rdif))
-    else:
-        loc = (max(1, max(r, door[0]) - cdif), min(c, door[1]))
-
-    return loc, l
+    return (cases[0][0], cases[0][1]), cases[0][2]
 
 
 def rotate_board(loc, l: int):
