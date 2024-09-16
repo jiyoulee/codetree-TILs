@@ -26,9 +26,9 @@ def go(cur_pos, dst_pos, history, history_list, visited):
     cur_r, cur_c = cur_pos
 
     for d in range(4):
-        next_r, next_c = (cur_r + d8[d][0], cur_c + d8[d][1])
+        next_r, next_c = ((cur_r + d8[d][0]) % N, (cur_c + d8[d][1]) % M)
 
-        if in_range(next_r, next_c) and len(history) + 1 < visited[next_r][next_c] and board[next_r][next_c]:
+        if in_range(next_r, next_c) and len(history) + 1 < visited[next_r][next_c] and board[next_r][next_c] > 0:
             tmp = visited[next_r][next_c]
             visited[next_r][next_c] = len(history) + 1
             go((next_r, next_c), dst_pos, history + [d], history_list, visited)
@@ -48,7 +48,7 @@ def attack_with_lazer(src_pos, dst_pos):
     if history_list:
         cur_pos = src_pos
         for d in history_list[0]:
-            next_pos = (cur_pos[0] + d8[d][0], cur_pos[1] + d8[d][1])
+            next_pos = ((cur_pos[0] + d8[d][0]) % N, (cur_pos[1] + d8[d][1]) % M)
             pos_list.append(next_pos)
             cur_pos = next_pos
 
@@ -72,7 +72,7 @@ def main():
         turret_list = []
         for i in range(N):
             for j in range(M):
-                if board[i][j]:
+                if board[i][j] > 0:
                     turret_list.append(
                         (
                             i,
@@ -100,12 +100,12 @@ def main():
             for j in range(M):
                 cur_pos = (i, j)
                 
-                if board[i][j] and cur_pos != src_pos:
+                if cur_pos != src_pos:
                     if cur_pos == dst_pos:
                         board[i][j] -= board[src_pos[0]][src_pos[1]]
                     elif cur_pos in target_pos_list:
                         board[i][j] -= board[src_pos[0]][src_pos[1]] // 2
-                    else:
+                    elif board[i][j] > 0:
                         board[i][j] += 1
 
     for i in range(N):
