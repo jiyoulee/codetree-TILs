@@ -76,12 +76,11 @@ def move_kth_fairy(r, c):
             next_r, next_c = cur_r + deltas[d][0], cur_c + deltas[d][1]
 
             if 3 <= next_r <= R + 2 and 1 <= next_c <= C and not visited[next_r][next_c]:
-                visited[next_r][next_c] = True
-
                 if (
                         (board[cur_r][cur_c] > 0 and abs(board[next_r][next_c]) == board[cur_r][cur_c])
                         or (board[cur_r][cur_c] < 0 and board[next_r][next_c] != 0)
                 ):
+                    visited[next_r][next_c] = True
                     q.append((next_r, next_c))
 
     return result_r - 2
