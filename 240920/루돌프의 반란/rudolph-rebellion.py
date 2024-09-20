@@ -1,9 +1,9 @@
 N, M, P, C, D = map(int, input().split())
 rudolf_pos = tuple(map(int, input().split()))
-santa_pos_list = [(0, 0)]
+santa_pos_list = [()] * (P + 1)
 for _ in range(P):
     sid, r, c = map(int, input().split())
-    santa_pos_list.append((r, c))
+    santa_pos_list[sid] = (r, c)
 
 board = [[0] * (N + 1) for _ in range(N + 1)]
 board[rudolf_pos[0]][rudolf_pos[1]] = -1
