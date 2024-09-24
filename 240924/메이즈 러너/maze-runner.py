@@ -83,7 +83,7 @@ def main():
         door = (door[1] + r - c, -door[0] + r + c + l)
 
     print(answer)
-    print(door)
+    print(door[0], door[1])
 
 
 if __name__ == "__main__":
