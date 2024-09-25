@@ -80,7 +80,7 @@ for k in range(1, K + 1):
         board[r2][c2] -= board[r1][c1]
         for d in range(8):
             cur_r, cur_c = (r2 + deltas[d][0]) % N, (c2 + deltas[d][1]) % M
-            if cur_r != r1 and cur_c != c1:
+            if cur_r != r1 or cur_c != c1:
                 processed[cur_r][cur_c] = True
                 board[cur_r][cur_c] -= board[r1][c1] // 2
 
