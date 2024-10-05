@@ -29,46 +29,22 @@ def initialize(n, u):
     domains[did] = [False, 0, 0]
     q[(did, tid)] = (0, 1)
 
-    if debug:
-        print("100")
-        print(judges)
-        print(judges_min_heap)
-        print(domains)
-        print(q)
-        print("-" * 100)
-
 
 def post(t, p, u):
-    if debug:
-        print("200")
-
     did, tid = map(lambda x: int(x) if x.isdigit() else x, u.split('/'))
 
     if (did, tid) in q:
-        if debug:
-            print("-" * 100)
-
         return
 
     if did not in domains:
         domains[did] = [False, 0, 0]
     q[(did, tid)] = (t, p)
 
-    if debug:
-        print(domains)
-        print(q)
-        print("-" * 100)
-
 
 def put300(t):
     global judges_min_heap, judges, domains, q
-    
-    if debug:
-        print("300")
 
     if not judges_min_heap:
-        if debug:
-            print("-" * 100)
         return
 
     ret_t, ret_p, ret_did, ret_tid = 1 << 30, 1 << 30, "", -1
@@ -89,36 +65,18 @@ def put300(t):
         judges[jid][0], judges[jid][1] = ret_did, ret_tid
         domains[ret_did][0], domains[ret_did][1] = True, t
         q.pop((ret_did, ret_tid))
-
-    if debug:
-        print(judges)
-        print(judges_min_heap)
-        print(domains)
-        print(q)
-        print("-" * 100)
         
         
 def put400(t, jid):
-    global judges_min_heap, judges, domains
-
-    if debug:
-        print("400")
+    global judges_min_heap, judges, domains\
 
     if not judges[jid][0]:
-        if debug:
-            print("-" * 100)
         return
 
     did, tid = judges[jid]
     judges[jid][0], judges[jid][1] = "", -1
     heapq.heappush(judges_min_heap, jid)
     domains[did][0], domains[did][2] = False, t - domains[did][1]
-
-    if debug:
-        print(judges)
-        print(judges_min_heap)
-        print(domains)
-        print("-" * 100)
         
 
 def get():
@@ -145,8 +103,4 @@ for _ in range(Q):
         put400(t, jid)
     elif 500 == command:
         answer = get()
-        if debug:
-            print("500")
         print(answer)
-        if debug:
-            print("-" * 100)
