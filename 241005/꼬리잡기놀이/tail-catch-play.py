@@ -17,7 +17,7 @@ def in_range(r: int, c: int):
 
 
 def update_team(ball_r, ball_c):
-    global answers
+    global answers, teams
     
     flag = False
     for idx in range(M):
