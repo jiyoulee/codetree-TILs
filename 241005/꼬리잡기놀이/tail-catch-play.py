@@ -10,15 +10,36 @@ answers = [0] * M
 
 deltas = [(0, 1), (-1, 0), (0, -1), (1, 0)]
 
+
 # --- Functions
 
 def in_range(r: int, c: int):
     return 0 <= r < N and 0 <= c < N
 
 
+def dfs(cur_r, cur_c, idx):
+    global teams, grid
+
+    grid[cur_r][cur_c] = 5
+    teams[idx].append((cur_r, cur_c))
+
+    for d in range(4):
+        next_r, next_c = cur_r + deltas[d][0], cur_c + deltas[d][1]
+
+        if not in_range(next_r, next_c):
+            continue
+        if not grid[next_r][next_c] or 4 <= grid[next_r][next_c]:
+            continue
+        if len(teams[idx]) == 1 and 3 == grid[next_r][next_c]:
+            continue
+
+        dfs(next_r, next_c, idx)
+        break
+
+
 def update_team(ball_r, ball_c):
     global answers, teams
-    
+
     flag = False
     for idx in range(M):
         for i in range(len(teams[idx])):
@@ -37,7 +58,6 @@ def update_team(ball_r, ball_c):
         if flag:
             break
 
-
 # --- Main Logic
 
 idx = 0
@@ -45,32 +65,7 @@ for i in range(N):
     for j in range(N):
         if 1 == grid[i][j]:
             cur_r, cur_c = i, j
-
-            grid[cur_r][cur_c] = 5
-            teams[idx].append((cur_r, cur_c))
-
-            while True:
-                updated = False
-
-                for d in range(4):
-                    next_r, next_c = cur_r + deltas[d][0], cur_c + deltas[d][1]
-                    if in_range(next_r, next_c) and 2 == grid[next_r][next_c]:
-                        grid[next_r][next_c] = 5
-                        teams[idx].append((next_r, next_c))
-                        cur_r, cur_c = next_r, next_c
-                        updated = True
-                        break
-
-                if not updated:
-                    break
-
-            for d in range(4):
-                next_r, next_c = cur_r + deltas[d][0], cur_c + deltas[d][1]
-                if in_range(next_r, next_c) and 3 == grid[next_r][next_c]:
-                    grid[next_r][next_c] = 5
-                    teams[idx].append((next_r, next_c))
-                    break
-
+            dfs(cur_r, cur_c, idx)
             idx += 1
 
 for k in range(K):
