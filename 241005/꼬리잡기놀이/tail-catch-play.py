@@ -50,23 +50,25 @@ for i in range(N):
             teams[idx].append((cur_r, cur_c))
 
             while True:
-                flag = True
+                updated = False
 
                 for d in range(4):
                     next_r, next_c = cur_r + deltas[d][0], cur_c + deltas[d][1]
+                    if in_range(next_r, next_c) and 2 == grid[next_r][next_c]:
+                        grid[next_r][next_c] = 5
+                        teams[idx].append((next_r, next_c))
+                        cur_r, cur_c = next_r, next_c
+                        updated = True
+                        break
 
-                    if not in_range(next_r, next_c):
-                        continue
-                    if 1 >= grid[next_r][next_c] or 4 <= grid[next_r][next_c]:
-                        continue
-
-                    grid[next_r][next_c] = 5
-                    teams[idx].append((next_r, next_c))
-                    cur_r, cur_c = next_r, next_c
-                    flag = False
+                if not updated:
                     break
 
-                if flag:
+            for d in range(4):
+                next_r, next_c = cur_r + deltas[d][0], cur_c + deltas[d][1]
+                if 3 == grid[next_r][next_c]:
+                    grid[next_r][next_c] = 5
+                    teams[idx].append((next_r, next_c))
                     break
 
             idx += 1
