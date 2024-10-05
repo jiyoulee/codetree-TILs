@@ -66,7 +66,7 @@ for i in range(N):
 
             for d in range(4):
                 next_r, next_c = cur_r + deltas[d][0], cur_c + deltas[d][1]
-                if 3 == grid[next_r][next_c]:
+                if in_range(next_r, next_c) and 3 == grid[next_r][next_c]:
                     grid[next_r][next_c] = 5
                     teams[idx].append((next_r, next_c))
                     break
