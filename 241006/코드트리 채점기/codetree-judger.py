@@ -109,7 +109,8 @@ def put400(t, jid):
         print("400")
 
     if not judges[jid][0]:
-        print("-" * 100)
+        if debug:
+            print("-" * 100)
         return
 
     did, tid = judges[jid]
