@@ -12,14 +12,13 @@ judges = []
 judges_min_heap = []
 
 domains = {}
-
-q = {}
+waitlist = {}
 
 # --- Functions
 
 
 def initialize(n, u):
-    global N, q, judges, judges_min_heap, domains
+    global N, waitlist, judges, judges_min_heap, domains
 
     N = n
     judges = [["", -1] for _ in range(N + 1)]
@@ -27,60 +26,111 @@ def initialize(n, u):
 
     did, tid = map(lambda x: int(x) if x.isdigit() else x, u.split('/'))
     domains[did] = [False, 0, 0]
-    q[(did, tid)] = (0, 1)
+    waitlist[did] = [(1, 0, tid)]
+
+    if debug:
+        print("100")
+        print(judges)
+        print(judges_min_heap)
+        print(domains)
+        print(waitlist)
+        print("-" * 100)
 
 
 def post(t, p, u):
+    if debug:
+        print("200")
+
     did, tid = map(lambda x: int(x) if x.isdigit() else x, u.split('/'))
 
-    if (did, tid) in q:
-        return
+    if did in waitlist:
+        for (_, _, cur_tid) in waitlist[did]:
+            if cur_tid == tid:
+                if debug:
+                    print("-" * 100)
+
+                return
 
     if did not in domains:
         domains[did] = [False, 0, 0]
-    q[(did, tid)] = (t, p)
+    if did not in waitlist:
+        waitlist[did] = []
+    heapq.heappush(waitlist[did], (p, t, tid))
+
+    if debug:
+        print(domains)
+        print(waitlist)
+        print("-" * 100)
 
 
 def put300(t):
-    global judges_min_heap, judges, domains, q
+    global judges_min_heap, judges, domains, waitlist
+    
+    if debug:
+        print("300")
 
     if not judges_min_heap:
+        if debug:
+            print("-" * 100)
         return
 
     ret_t, ret_p, ret_did, ret_tid = 1 << 30, 1 << 30, "", -1
-    for (did, tid) in q:
-        if domains[did][0]:
+    for cur_did in waitlist:
+        if domains[cur_did][0]:
             continue
 
-        start, gap = domains[did][1:]
+        start, gap = domains[cur_did][1:]
         if t < start + 3 * gap:
             continue
 
-        cur_t, cur_p = q[(did, tid)]
-        if cur_p < ret_p or (cur_p == ret_p and cur_t < ret_t):
-            ret_t, ret_p, ret_did, ret_tid = cur_t, cur_p, did, tid
+        if waitlist[cur_did]:
+            cur_p, cur_t, cur_tid = waitlist[cur_did][0]
+            if cur_p < ret_p or (cur_p == ret_p and cur_t < ret_t):
+                ret_t, ret_p, ret_did, ret_tid = cur_t, cur_p, cur_did, cur_tid
 
     if ret_did:
         jid = heapq.heappop(judges_min_heap)
         judges[jid][0], judges[jid][1] = ret_did, ret_tid
         domains[ret_did][0], domains[ret_did][1] = True, t
-        q.pop((ret_did, ret_tid))
+        heapq.heappop(waitlist[ret_did])
+
+    if debug:
+        print(judges)
+        print(judges_min_heap)
+        print(domains)
+        print(waitlist)
+        print("-" * 100)
         
         
 def put400(t, jid):
-    global judges_min_heap, judges, domains\
+    global judges_min_heap, judges, domains
+
+    if debug:
+        print("400")
 
     if not judges[jid][0]:
+        print("-" * 100)
         return
 
     did, tid = judges[jid]
     judges[jid][0], judges[jid][1] = "", -1
     heapq.heappush(judges_min_heap, jid)
     domains[did][0], domains[did][2] = False, t - domains[did][1]
+
+    if debug:
+        print(judges)
+        print(judges_min_heap)
+        print(domains)
+        print("-" * 100)
         
 
 def get():
-    return len(q)
+    ret_val = 0
+
+    for did in waitlist:
+        ret_val += len(waitlist[did])
+
+    return ret_val
 
 # --- Main Logic
 
@@ -103,4 +153,8 @@ for _ in range(Q):
         put400(t, jid)
     elif 500 == command:
         answer = get()
+        if debug:
+            print("500")
         print(answer)
+        if debug:
+            print("-" * 100)
