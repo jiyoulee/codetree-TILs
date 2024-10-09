@@ -8,73 +8,76 @@ N, M = 0, 0
 
 items = {}
 
-belts = []
+heads = []
 broken = []
 
 # --- Functions
 
 
+def printg():
+    for pid in items:
+        print(items[pid]["pid"], end=" ")
+    print("")
+    for hid in range(1, M + 1):
+        print(hid, end=" ")
+        if not broken[hid] and heads[hid]:
+            cur = heads[hid]
+            while cur["next"] != heads[hid]:
+                print(f"cur: {cur['pid']}, prev: {cur['prev']['pid']}, next: {cur['next']['pid']}")
+                cur = cur["next"]
+            print(f"cur: {cur['pid']}, prev: {cur['prev']['pid']}, next: {cur['next']['pid']}")
+        print(" ")
+
+
 def initialize(n, m, rest):
-    global N, M, items, belts, broken
+    global N, M, items, heads, broken
 
     N, M = n, m
 
-    belts = [None] * (M + 1)
+    heads = [None] * (M + 1)
     broken = [0] * (M + 1)
 
     rest = [tuple([rest[i], rest[i + n]]) for i in range(n)]
     for i in range(n):
         pid, weight = rest[i]
-        bid = i * m // n + 1
+        hid = i * m // n + 1
 
         items[pid] = {
             "pid": pid,
             "weight": weight,
-            "bid": bid,
+            "hid": hid,
             "prev": None,
             "next": None
         }
 
-        if not belts[bid]:
+        if not heads[hid]:
             items[pid]["prev"] = items[pid]
             items[pid]["next"] = items[pid]
-            belts[bid] = items[pid]
-            continue
-
-        cur = belts[bid]["prev"]
-        
-        cur["next"]["prev"] = items[pid]
-        items[pid]["next"] = cur["next"]
-        cur["next"] = items[pid]
-        items[pid]["prev"] = cur
+            heads[hid] = items[pid]
+        else:
+            cur = heads[hid]["prev"]
+            cur["next"]["prev"] = items[pid]
+            items[pid]["next"] = cur["next"]
+            cur["next"] = items[pid]
+            items[pid]["prev"] = cur
 
     if debug:
         print("> 100")
-        for pid in items:
-            print(items[pid]["pid"], end= " ")
-        print("")
-        for bid in range(1, M + 1):
-            cur = belts[bid]
-            print(bid, end=" ")
-            while cur["next"] != belts[bid]:
-                print(cur["pid"], end=" ")
-                cur = cur["next"]
-            print(cur["pid"], end=" ")
-            print(" ")
+        printg()
         print("-" * 100)
 
 
 def unload(max_weight):
-    global items
+    global items, heads
 
     answer = 0
 
-    for bid in range(1, M + 1):
-        if broken[bid]:
+    for hid in range(1, M + 1):
+        if broken[hid] or not heads[hid]:
             continue
 
-        cur = belts[bid]
-        belts[bid] = belts[bid]["next"]
+        cur = heads[hid]
+        heads[hid] = None if cur == cur["next"] else heads[hid]["next"]
 
         if cur["weight"] <= max_weight:
             answer += cur["weight"]
@@ -86,24 +89,13 @@ def unload(max_weight):
             items.pop(cur["pid"])
 
     if debug:
-        for pid in items:
-            print(items[pid]["pid"], end=" ")
-        print("")
-        for bid in range(1, M + 1):
-            cur = belts[bid]
-            print(bid, end=" ")
-            if cur:
-                while cur["next"] != belts[bid]:
-                    print(cur["pid"], end=" ")
-                    cur = cur["next"]
-                print(cur["pid"], end=" ")
-            print(" ")
+        printg()
 
     return answer
 
 
 def delete(pid):
-    global items
+    global items, heads
 
     answer = -1
 
@@ -111,6 +103,12 @@ def delete(pid):
         answer = pid
 
         cur = items[pid]
+        hid = items[pid]["hid"]
+        while broken[hid]:
+            hid = broken[hid]
+        if cur == heads[hid]:
+            heads[hid] = None if cur == cur["next"] else heads[hid]["next"]
+
         cur["prev"]["next"] = cur["next"]
         cur["next"]["prev"] = cur["prev"]
         cur["prev"] = None
@@ -118,93 +116,63 @@ def delete(pid):
         items.pop(cur["pid"])
 
     if debug:
-        for pid in items:
-            print(items[pid]["pid"], end=" ")
-        print("")
-        for bid in range(1, M + 1):
-            cur = belts[bid]
-            print(bid, end=" ")
-            if cur:
-                while cur["next"] != belts[bid]:
-                    print(cur["pid"], end=" ")
-                    cur = cur["next"]
-                print(cur["pid"], end=" ")
-            print(" ")
+        printg()
 
     return answer
 
 
 def get(pid):
-    global items
+    global items, heads
 
     answer = -1
 
     if pid in items:
-        bid = items[pid]["bid"]
-        while broken[bid]:
-            bid = broken[bid]
-        answer = bid
-        belts[bid] = items[pid]
+        hid = items[pid]["hid"]
+        while broken[hid]:
+            hid = broken[hid]
+        answer = hid
+        heads[hid] = items[pid]
 
     if debug:
-        for pid in items:
-            print(items[pid]["pid"], end=" ")
-        print("")
-        for bid in range(1, M + 1):
-            cur = belts[bid]
-            print(bid, end=" ")
-            if cur:
-                while cur["next"] != belts[bid]:
-                    print(cur["pid"], end=" ")
-                    cur = cur["next"]
-                print(cur["pid"], end=" ")
-            print(" ")
+        printg()
 
     return answer
 
 
-def crash(bid):
-    global broken
+def crash(hid):
+    global broken, heads
 
     answer = -1
 
-    if not broken[bid]:
-        answer = bid
+    if not broken[hid]:
+        answer = hid
 
-        new_bid = 0
-        for cur_bid in range(bid + 1, M + 1):
+        new_hid = 0
+        for cur_bid in range(hid + 1, M + 1):
             if not broken[cur_bid]:
-                new_bid = cur_bid
+                new_hid = cur_bid
                 break
-        if not new_bid:
-            for cur_bid in range(1, bid):
+        if not new_hid:
+            for cur_bid in range(1, hid):
                 if not broken[cur_bid]:
-                    new_bid = cur_bid
+                    new_hid = cur_bid
                     break
 
-        broken[bid] = new_bid
+        broken[hid] = new_hid
 
-        cur = belts[bid]
-        belts[bid] = None
+        cur = heads[hid]
+        heads[hid] = None
 
-        belts[new_bid]["prev"]["next"] = cur
-        cur["prev"]["next"] = belts[new_bid]
-        belts[new_bid]["prev"] = cur["prev"]
-        cur["prev"] = belts[new_bid]["prev"]
+        if not heads[new_hid]:
+            heads[new_hid] = cur
+        else:
+            heads[new_hid]["prev"]["next"] = cur
+            cur["prev"]["next"] = heads[new_hid]
+            heads[new_hid]["prev"] = cur["prev"]
+            cur["prev"] = heads[new_hid]["prev"]
 
     if debug:
-        for pid in items:
-            print(items[pid]["pid"], end=" ")
-        print("")
-        for bid in range(1, M + 1):
-            cur = belts[bid]
-            print(bid, end=" ")
-            if cur:
-                while cur["next"] != belts[bid]:
-                    print(cur["pid"], end=" ")
-                    cur = cur["next"]
-                print(cur["pid"], end=" ")
-            print(" ")
+        printg()
 
     return answer
 
@@ -244,8 +212,8 @@ for _ in range(Q):
         if debug:
             print("-" * 100)
     elif 500 == command:
-        bid = rest[0]
-        answer = crash(bid)
+        hid = rest[0]
+        answer = crash(hid)
         if debug:
             print("> 500")
         print(answer)
